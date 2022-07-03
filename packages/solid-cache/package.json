@@ -1,0 +1,71 @@
+{
+  "name": "solid-cache",
+  "version": "0.0.0",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pridepack"
+  ],
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "eslint": "^8.18.0",
+    "eslint-config-lxsmnsyc": "^0.4.1",
+    "pridepack": "2.0.0",
+    "solid-js": "^1.4.5",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4",
+    "vitest": "^0.16.0"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.3"
+  },
+  "scripts": {
+    "prepublishOnly": "pridepack clean && pridepack build",
+    "build": "pridepack build",
+    "type-check": "pridepack check",
+    "lint": "pridepack lint",
+    "clean": "pridepack clean",
+    "watch": "pridepack watch",
+    "start": "pridepack start",
+    "dev": "pridepack dev",
+    "test": "vitest"
+  },
+  "description": "Cached data-fetching for SolidJS",
+  "repository": {
+    "url": "https://github.com/lxsmnsyc/solid-cache.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/lxsmnsyc/solid-cache/tree/main/packages/solid-cache",
+  "bugs": {
+    "url": "https://github.com/lxsmnsyc/solid-cache/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Alexis Munsayac",
+  "private": false,
+  "exports": {
+    ".": {
+      "development": {
+        "require": "./dist/cjs/development/index",
+        "import": "./dist/esm/development/index"
+      },
+      "require": "./dist/cjs/production/index",
+      "import": "./dist/esm/production/index",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/types/index.d.ts"
+      ]
+    }
+  }
+}
