@@ -19,7 +19,24 @@ import {
 import CacheInstance, {
   CacheAction,
   CacheData,
+  CacheResult,
 } from './cache-instance';
+
+function signalToResource<T>(
+  result: () => CacheResult<T> | undefined,
+): Resource<T | undefined> {
+  const [data] = createResource(
+    () => result(),
+    (currentResult) => {
+      if (currentResult.status === 'failure') {
+        throw currentResult.value;
+      }
+      return currentResult.value;
+    },
+  );
+
+  return data;
+}
 
 const CacheContext = createContext<CacheInstance>();
 
@@ -69,15 +86,24 @@ export interface CachedResource<T> {
   isFetching: () => boolean;
 }
 
-export function createCachedResource<Source, Value>(
-  source: () => Source,
-  key: (currentSource: Source) => string,
-  fetcher: (currentSource: Source) => Promise<Value>,
+export interface CachedResourceOptionsWithSource<Source, Value> {
+  source: () => Source;
+  key: (currentSource: Source) => string;
+  get: (currentSource: Source) => Promise<Value>;
+}
+
+export interface CachedResourceOptionsWithoutSource<Value> {
+  key: string;
+  get: () => Promise<Value>;
+}
+
+function createCachedResourceWithSource<Source, Value>(
+  options: CachedResourceOptionsWithSource<Source, Value>,
 ): CachedResource<Value | undefined> {
   const ctx = useCacheContext();
 
-  const currentSource = createMemo(() => source());
-  const currentKey = createMemo(() => key(currentSource()));
+  const currentSource = createMemo(() => options.source());
+  const currentKey = createMemo(() => options.key(currentSource()));
 
   const [result, setResult] = createSignal<CacheData<Value>>(
     ctx.get(cachedResource, untrack(currentKey)),
@@ -109,7 +135,7 @@ export function createCachedResource<Source, Value>(
       return;
     }
 
-    const fetchedResult = fetcher(targetSource);
+    const fetchedResult = options.get(targetSource);
 
     fetchedResult.then(
       (value) => {
@@ -171,18 +197,121 @@ export function createCachedResource<Source, Value>(
     );
   });
 
-  const [data] = createResource(
-    () => result().data,
-    (currentResult) => {
-      if (currentResult.status === 'failure') {
-        throw currentResult.value;
-      }
-      return currentResult.value;
-    },
-  );
-
   return {
-    data,
+    data: signalToResource(() => result().data),
     isFetching: () => result().isFetching,
   };
+}
+
+function createCachedResourceWithoutSource<Value>(
+  options: CachedResourceOptionsWithoutSource<Value>,
+): CachedResource<Value | undefined> {
+  const ctx = useCacheContext();
+
+  const key = untrack(() => options.key);
+
+  const [result, setResult] = createSignal<CacheData<Value>>(
+    ctx.get(cachedResource, key),
+  );
+
+  // Bind cache to local signal
+  createComputed(() => {
+    onCleanup(
+      ctx.subscribe<Value>(
+        cachedResource,
+        key,
+        setResult,
+      ),
+    );
+
+    // Sync local signal
+    setResult(ctx.get<Value>(cachedResource, key));
+  });
+
+  function createRecord(
+    targetKey: string,
+    swr: boolean,
+  ) {
+    // Dedupe when there's an on-going fetch
+    if (ctx.isFetching(cachedResource, targetKey)) {
+      return;
+    }
+
+    const fetchedResult = options.get();
+
+    fetchedResult.then(
+      (value) => {
+        ctx.set(cachedResource, targetKey, {
+          data: {
+            status: 'success',
+            value,
+          },
+          isFetching: false,
+        });
+      },
+      (value) => {
+        ctx.set(cachedResource, targetKey, {
+          data: {
+            status: 'failure',
+            value,
+          },
+          isFetching: false,
+        });
+      },
+    );
+
+    if (swr) {
+      ctx.set(cachedResource, targetKey, {
+        data: ctx.get(cachedResource, targetKey)?.data,
+        isFetching: true,
+      });
+    } else {
+      ctx.set(cachedResource, targetKey, {
+        data: {
+          status: 'pending',
+          value: fetchedResult,
+        },
+        isFetching: true,
+      });
+    }
+  }
+
+  const currentResult = ctx.get<Value>(cachedResource, key);
+  if (!currentResult.data) {
+    createRecord(key, false);
+  }
+
+  // Manage fetcher by refresh action
+  createComputed(() => {
+    onCleanup(
+      ctx.trackRefresh((action) => {
+        createRecord(
+          key,
+          action === 'stale-while-revalidate',
+        );
+      }),
+    );
+  });
+
+  return {
+    data: signalToResource(() => result().data),
+    isFetching: () => result().isFetching,
+  };
+}
+
+export function createCachedResource<Source, Value>(
+  options: CachedResourceOptionsWithSource<Source, Value>,
+): CachedResource<Value | undefined>
+export function createCachedResource<Value>(
+  options: CachedResourceOptionsWithoutSource<Value>,
+): CachedResource<Value | undefined>
+export function createCachedResource<Source, Value>(
+  options:
+    | CachedResourceOptionsWithSource<Source, Value>
+    | CachedResourceOptionsWithoutSource<Value>,
+): CachedResource<Value | undefined> {
+  if ('source' in options) {
+    return createCachedResourceWithSource(options);
+  }
+  return createCachedResourceWithoutSource(options);
 }

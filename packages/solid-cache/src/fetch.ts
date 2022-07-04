@@ -39,59 +39,74 @@ export class FetchResponse {
   }
 
   arrayBuffer(): CachedResource<ArrayBuffer | undefined> {
-    return createCachedResource(
-      () => fromSignal(this.input),
-      serializeInput,
-      async (localInput) => {
-        const response = await nativeFetch(localInput, fromSignal(this.init));
+    return createCachedResource({
+      source: () => fromSignal(this.input),
+      key: serializeInput,
+      get: async (localInput) => {
+        const response = await nativeFetch(
+          localInput,
+          fromSignal(this.init),
+        );
         return response.arrayBuffer();
       },
-    );
+    });
   }
 
   blob(): CachedResource<Blob | undefined> {
-    return createCachedResource(
-      () => fromSignal(this.input),
-      serializeInput,
-      async (localInput) => {
-        const response = await nativeFetch(localInput, fromSignal(this.init));
+    return createCachedResource({
+      source: () => fromSignal(this.input),
+      key: serializeInput,
+      get: async (localInput) => {
+        const response = await nativeFetch(
+          localInput,
+          fromSignal(this.init),
+        );
         return response.blob();
       },
-    );
+    });
   }
 
   formData(): CachedResource<FormData | undefined> {
-    return createCachedResource(
-      () => fromSignal(this.input),
-      serializeInput,
-      async (localInput) => {
-        const response = await nativeFetch(localInput, fromSignal(this.init));
+    return createCachedResource({
+      source: () => fromSignal(this.input),
+      key: serializeInput,
+      get: async (localInput) => {
+        const response = await nativeFetch(
+          localInput,
+          fromSignal(this.init),
+        );
         return response.formData();
       },
-    );
+    });
   }
 
   json<T>(): CachedResource<T> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return createCachedResource(
-      () => fromSignal(this.input),
-      serializeInput,
-      async (localInput) => {
-        const response = await nativeFetch(localInput, fromSignal(this.init));
+    return createCachedResource({
+      source: () => fromSignal(this.input),
+      key: serializeInput,
+      get: async (localInput) => {
+        const response = await nativeFetch(
+          localInput,
+          fromSignal(this.init),
+        );
         return response.json();
       },
-    );
+    });
   }
 
   text(): CachedResource<string | undefined> {
-    return createCachedResource(
-      () => fromSignal(this.input),
-      serializeInput,
-      async (localInput) => {
-        const response = await nativeFetch(localInput, fromSignal(this.init));
+    return createCachedResource({
+      source: () => fromSignal(this.input),
+      key: serializeInput,
+      get: async (localInput) => {
+        const response = await nativeFetch(
+          localInput,
+          fromSignal(this.init),
+        );
         return response.text();
       },
-    );
+    });
   }
 }
 
