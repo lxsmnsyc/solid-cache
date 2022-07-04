@@ -10,14 +10,13 @@ function sleep(timeout: number): Promise<boolean> {
 }
 
 function Example() {
-  const { data, isFetching } = createCachedResource(
-    () => null,
-    () => 'Example',
-    async () => {
+  const { data, isFetching } = createCachedResource({
+    key: 'Example',
+    async get() {
       await sleep(3000);
       return `Current time: ${new Date()}`;
     },
-  );
+  });
 
   return (
     <Suspense fallback={<h1>Loading...</h1>}>
