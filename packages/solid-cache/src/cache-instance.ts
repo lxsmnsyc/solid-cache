@@ -1,7 +1,5 @@
 import { Cache } from './cache';
 
-export type CacheAction = 'stale-while-revalidate' | 'refresh';
-
 export interface CachePending<T> {
   status: 'pending';
   value: Promise<T>;
@@ -34,7 +32,7 @@ export interface CacheRecord<T> {
   listeners: Set<CacheListener<T>>;
 }
 
-export type CacheActionListener = (action: CacheAction) => void;
+export type CacheActionListener = (swr?: boolean) => void;
 
 export default class CacheInstance {
   private alive = true;
@@ -43,10 +41,10 @@ export default class CacheInstance {
 
   private store = new Map<string, Map<string, CacheRecord<any>>>();
 
-  refresh(action: CacheAction) {
+  refresh(swr?: boolean) {
     if (this.alive) {
       for (const listener of this.listeners.keys()) {
-        listener(action);
+        listener(swr);
       }
     }
   }

@@ -17,7 +17,6 @@ import {
   createCache,
 } from './cache';
 import CacheInstance, {
-  CacheAction,
   CacheData,
   CacheResult,
 } from './cache-instance';
@@ -74,8 +73,8 @@ function useCacheContext(): CacheInstance {
 export function useCacheBoundaryRefresh() {
   const ctx = useCacheContext();
 
-  return (action: CacheAction) => {
-    ctx.refresh(action);
+  return (swr?: boolean) => {
+    ctx.refresh(swr);
   };
 }
 
@@ -128,7 +127,7 @@ function createCachedResourceWithSource<Source, Value>(
   function createRecord(
     targetKey: string,
     targetSource: Source,
-    swr: boolean,
+    swr?: boolean,
   ) {
     // Dedupe when there's an on-going fetch
     if (ctx.isFetching(cachedResource, targetKey)) {
@@ -187,11 +186,11 @@ function createCachedResourceWithSource<Source, Value>(
   // Manage fetcher by refresh action
   createComputed(() => {
     onCleanup(
-      ctx.trackRefresh((action) => {
+      ctx.trackRefresh((swr) => {
         createRecord(
           untrack(currentKey),
           untrack(currentSource),
-          action === 'stale-while-revalidate',
+          swr,
         );
       }),
     );
@@ -230,7 +229,7 @@ function createCachedResourceWithoutSource<Value>(
 
   function createRecord(
     targetKey: string,
-    swr: boolean,
+    swr?: boolean,
   ) {
     // Dedupe when there's an on-going fetch
     if (ctx.isFetching(cachedResource, targetKey)) {
@@ -284,10 +283,10 @@ function createCachedResourceWithoutSource<Value>(
   // Manage fetcher by refresh action
   createComputed(() => {
     onCleanup(
-      ctx.trackRefresh((action) => {
+      ctx.trackRefresh((swr) => {
         createRecord(
           key,
-          action === 'stale-while-revalidate',
+          swr,
         );
       }),
     );
