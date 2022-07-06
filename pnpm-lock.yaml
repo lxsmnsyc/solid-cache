@@ -38,8 +38,8 @@ importers:
       '@types/node': ^18.0.0
       eslint: ^8.18.0
       eslint-config-lxsmnsyc: ^0.4.1
-      pridepack: 2.0.0
-      solid-js: ^1.4.5
+      pridepack: 2.0.1
+      solid-js: ^1.4.6
       tslib: ^2.4.0
       typescript: ^4.7.4
       vitest: ^0.16.0
@@ -47,8 +47,8 @@ importers:
       '@types/node': 18.0.0
       eslint: 8.19.0
       eslint-config-lxsmnsyc: 0.4.1_4x5o4skxv6sl53vpwefgt23khm
-      pridepack: 2.0.0_xsidcuz64ajd7qj3o5yskahysq
-      solid-js: 1.4.5
+      pridepack: 2.0.1_xsidcuz64ajd7qj3o5yskahysq
+      solid-js: 1.4.6
       tslib: 2.4.0
       typescript: 4.7.4
       vitest: 0.16.0
@@ -5402,8 +5402,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /pridepack/2.0.0_xsidcuz64ajd7qj3o5yskahysq:
-    resolution: {integrity: sha512-XW2oWWocvfaBRMUGmjrynsUjgGQmPL6ntHJ/UgmXZg/9XUsLALmCUmKt5JNrwswYRy/q6CIPjNGalTCZxE5hjQ==}
+  /pridepack/2.0.1_xsidcuz64ajd7qj3o5yskahysq:
+    resolution: {integrity: sha512-lcdVoANJFJcD609zDpldM8t7qYsQX1b9WHnKpyvlLnT7cS7UDI5h562Qd3qns3lM6zoc7LPeNaMUVVd6TH2LIQ==}
     engines: {node: '>=10'}
     hasBin: true
     peerDependencies:
@@ -5919,6 +5919,10 @@ packages:
 
   /solid-js/1.4.5:
     resolution: {integrity: sha512-32NGpuabEJDTeQ7fjaTR2TLC7R/X5hbqhYdEQ1e+GcIK8r8+/V0Nv17eZQii5Z/97/mtdt8yi63chzg73qnz/A==}
+
+  /solid-js/1.4.6:
+    resolution: {integrity: sha512-vF0x5qbVCDi8zlEyN92y/i+pS7QNYh3uNvbSyUYDhLifKuYqGcJwGxbH9zzDX5sR8o1ijgzI6BEAXlcR7Mkkjw==}
+    dev: true
 
   /solid-refresh/0.4.1_solid-js@1.4.5:
     resolution: {integrity: sha512-v3tD/OXQcUyXLrWjPW1dXZyeWwP7/+GQNs8YTL09GBq+5FguA6IejJWUvJDrLIA4M0ho9/5zK2e9n+uy+4488g==}
