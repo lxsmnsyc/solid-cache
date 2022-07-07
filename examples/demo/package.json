@@ -17,7 +17,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "solid-js": "^1.4.5",
-    "solid-cache": "0.0.0"
-  }
+    "solid-cache": "0.1.0",
+    "solid-js": "^1.4.5"
+  },
+  "version": "0.1.0"
 }
