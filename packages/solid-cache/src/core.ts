@@ -1,32 +1,35 @@
 /* @jsxImportSource solid-js */
+import type {
+  JSX,
+  Resource,
+} from 'solid-js';
 import {
   createComponent,
-  createComputed,
   createContext,
   createMemo,
+  createRenderEffect,
   createResource,
   createSignal,
-  JSX,
   on,
   onCleanup,
-  Resource,
   untrack,
   useContext,
 } from 'solid-js';
 import {
   createCache,
 } from './cache';
-import CacheInstance, {
+import type {
   CacheData,
   CacheResult,
 } from './cache-instance';
+import CacheInstance from './cache-instance';
 
 function signalToResource<T>(
   result: () => CacheResult<T> | undefined,
 ): Resource<T | undefined> {
   const [data] = createResource(
     () => result(),
-    (currentResult) => {
+    async (currentResult) => {
       if (currentResult.status === 'failure') {
         throw currentResult.value;
       }
@@ -70,7 +73,7 @@ function useCacheContext(): CacheInstance {
   return ctx;
 }
 
-export function useCacheBoundaryRefresh() {
+export function useCacheBoundaryRefresh(): (swr?: boolean) => void {
   const ctx = useCacheContext();
 
   return (swr?: boolean) => {
@@ -109,7 +112,7 @@ function createCachedResourceWithSource<Source, Value>(
   );
 
   // Bind cache to local signal
-  createComputed(() => {
+  createRenderEffect(() => {
     const targetKey = currentKey();
 
     onCleanup(
@@ -128,7 +131,7 @@ function createCachedResourceWithSource<Source, Value>(
     targetKey: string,
     targetSource: Source,
     swr?: boolean,
-  ) {
+  ): void {
     // Dedupe when there's an on-going fetch
     if (ctx.isFetching(cachedResource, targetKey)) {
       return;
@@ -174,7 +177,7 @@ function createCachedResourceWithSource<Source, Value>(
   }
 
   // Manage fetcher
-  createComputed(
+  createRenderEffect(
     on(currentKey, (keyValue) => {
       const currentResult = ctx.get<Value>(cachedResource, keyValue);
       if (!currentResult.data) {
@@ -184,7 +187,7 @@ function createCachedResourceWithSource<Source, Value>(
   );
 
   // Manage fetcher by refresh action
-  createComputed(() => {
+  createRenderEffect(() => {
     onCleanup(
       ctx.trackRefresh((swr) => {
         createRecord(
@@ -214,7 +217,7 @@ function createCachedResourceWithoutSource<Value>(
   );
 
   // Bind cache to local signal
-  createComputed(() => {
+  createRenderEffect(() => {
     onCleanup(
       ctx.subscribe<Value>(
         cachedResource,
@@ -230,7 +233,7 @@ function createCachedResourceWithoutSource<Value>(
   function createRecord(
     targetKey: string,
     swr?: boolean,
-  ) {
+  ): void {
     // Dedupe when there's an on-going fetch
     if (ctx.isFetching(cachedResource, targetKey)) {
       return;
@@ -281,7 +284,7 @@ function createCachedResourceWithoutSource<Value>(
   }
 
   // Manage fetcher by refresh action
-  createComputed(() => {
+  createRenderEffect(() => {
     onCleanup(
       ctx.trackRefresh((swr) => {
         createRecord(

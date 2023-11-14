@@ -1,5 +1,4 @@
 {
-  "useWorkspaces": true,
   "packages": [
     "packages/*",
     "examples/*"
@@ -10,9 +9,7 @@
     },
     "publish": {
       "allowBranch": [
-        "main",
-        "vdom",
-        "no-vdom"
+        "main"
       ],
       "registry": "https://registry.npmjs.org/"
     }
