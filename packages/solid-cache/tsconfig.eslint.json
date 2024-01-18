@@ -16,6 +16,8 @@
     "moduleResolution": "node",
     "jsxImportSource": "solid-js",
     "esModuleInterop": true,
-    "target": "ES2017"
+    "target": "ES2018",
+    "useDefineForClassFields": false,
+    "declarationMap": true
   }
 }

@@ -1,4 +1,4 @@
-import { Cache } from './cache';
+import type { Cache } from './cache';
 
 export interface CachePending<T> {
   status: 'pending';
@@ -28,7 +28,7 @@ export interface CacheData<T> {
 export type CacheListener<T> = (result: CacheData<T>) => void;
 
 export interface CacheRecord<T> {
-  result: CacheData<T>
+  result: CacheData<T>;
   listeners: Set<CacheListener<T>>;
 }
 
@@ -41,7 +41,7 @@ export default class CacheInstance {
 
   private store = new Map<string, Map<string, CacheRecord<any>>>();
 
-  refresh(swr?: boolean) {
+  refresh(swr?: boolean): void {
     if (this.alive) {
       for (const listener of this.listeners.keys()) {
         listener(swr);
@@ -129,7 +129,7 @@ export default class CacheInstance {
     };
   }
 
-  destroy() {
+  destroy(): void {
     this.store.clear();
     this.listeners.clear();
     this.alive = false;

@@ -1,4 +1,5 @@
-import { CachedResource, createCachedResource } from './core';
+import type { CachedResource } from './core';
+import { createCachedResource } from './core';
 
 const nativeFetch = globalThis.fetch;
 
@@ -15,7 +16,7 @@ function fromSignal<T>(value: Signalify<T>): T {
   return value;
 }
 
-function serializeInput(input: RequestInfo | URL) {
+function serializeInput(input: RequestInfo | URL): string {
   if (typeof input === 'string') {
     return input;
   }
