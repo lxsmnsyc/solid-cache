@@ -15,10 +15,7 @@ export interface CacheFailure {
   value: any;
 }
 
-export type CacheResult<T> =
-  | CachePending<T>
-  | CacheSuccess<T>
-  | CacheFailure;
+export type CacheResult<T> = CachePending<T> | CacheSuccess<T> | CacheFailure;
 
 export interface CacheData<T> {
   data?: CacheResult<T>;
@@ -58,10 +55,7 @@ export default class CacheInstance {
     };
   }
 
-  get<T>(
-    cache: Cache,
-    key: string,
-  ): CacheData<T> {
+  get<T>(cache: Cache, key: string): CacheData<T> {
     return this.getRecord<T>(cache, key, { isFetching: false }).result;
   }
 
@@ -86,18 +80,11 @@ export default class CacheInstance {
     return currentRecord as CacheRecord<T>;
   }
 
-  isFetching(
-    cache: Cache,
-    key: string,
-  ): boolean {
+  isFetching(cache: Cache, key: string): boolean {
     return this.getRecord(cache, key, { isFetching: false }).result.isFetching;
   }
 
-  set<T>(
-    cache: Cache,
-    key: string,
-    result: CacheData<T>,
-  ): void {
+  set<T>(cache: Cache, key: string, result: CacheData<T>): void {
     if (this.alive) {
       const currentRecord = this.getRecord(cache, key, result);
       currentRecord.result = result;
@@ -116,7 +103,9 @@ export default class CacheInstance {
     listener: CacheListener<T>,
   ): () => void {
     if (this.alive) {
-      const currentRecord = this.getRecord<T>(cache, key, { isFetching: false });
+      const currentRecord = this.getRecord<T>(cache, key, {
+        isFetching: false,
+      });
       currentRecord.listeners.add(listener);
 
       return () => {

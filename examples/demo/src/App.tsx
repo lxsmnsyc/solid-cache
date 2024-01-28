@@ -1,15 +1,14 @@
-/* @jsxImportSource solid-js */
-import { JSX } from "solid-js/jsx-runtime";
+import type { JSX } from 'solid-js/jsx-runtime';
 import {
   CacheBoundary,
   createCachedResource,
   useCacheBoundaryRefresh,
   fetch,
-} from "solid-cache";
+} from 'solid-cache';
 import { Suspense } from 'solid-js';
 
 function sleep(timeout: number): Promise<boolean> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, timeout, true);
   });
 }
@@ -27,7 +26,7 @@ function Example() {
     <Suspense fallback={<h1>Loading...</h1>}>
       <h1
         style={{
-          opacity: isFetching() ? 0.5 : 1
+          opacity: isFetching() ? 0.5 : 1,
         }}
       >
         {data()}
@@ -41,14 +40,13 @@ interface DogImageResponse {
 }
 
 function DogImage() {
-  const { data, isFetching } = fetch('https://dog.ceo/api/breed/shiba/images/random').json<DogImageResponse>();
+  const { data, isFetching } = fetch(
+    'https://dog.ceo/api/breed/shiba/images/random',
+  ).json<DogImageResponse>();
 
   return (
     <Suspense>
-      <img
-        src={data()?.message}
-        style={{ opacity: isFetching() ? 0.5 : 1 }}
-      />
+      <img src={data()?.message} style={{ opacity: isFetching() ? 0.5 : 1 }} />
     </Suspense>
   );
 }
@@ -81,5 +79,5 @@ export default function App(): JSX.Element {
       <Example />
       <DogImage />
     </CacheBoundary>
-  )
+  );
 }
