@@ -21,7 +21,7 @@ importers:
   examples/demo:
     dependencies:
       solid-cache:
-        specifier: 0.2.0
+        specifier: 0.2.1
         version: link:../../packages/solid-cache
       solid-js:
         specifier: ^1.8.11
