@@ -3,6 +3,7 @@
 > Cache boundaries and resource caching in SolidJS
 
 [![NPM](https://img.shields.io/npm/v/solid-cache.svg)](https://www.npmjs.com/package/solid-cache) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)[![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?style=flat-square&logo=codesandbox)](https://codesandbox.io/s/github/LXSMNSYC/solid-cache/tree/main/examples/demo)
+[![Open in Codeanywhere](https://img.shields.io/badge/Open%20in-Codeanywhere-blue?style=flat-square&logo=codeanywhere)](https://app.codeanywhere.com/#https://github.com/LXSMNSYC/solid-cache/tree/main/examples/demo)
 
 ## Install
 
